@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Sequelize } from 'sequelize-typescript';
+import { ContractSectionHistory } from 'src/models/contract-section-history/contract-section-history.model';
 import { ContractSectionParticipant } from 'src/models/contract-section-participant/contract-section-participant.model';
 import { ContractSection } from 'src/models/contract-section/contract-section.model';
 import { Contract } from 'src/models/contract/contract.model';
@@ -29,6 +30,7 @@ export const databaseProviders = [
         ContractSection,
         Participant,
         ContractSectionParticipant,
+        ContractSectionHistory,
       ]);
       await sequelize.sync();
       return sequelize;

@@ -10,6 +10,7 @@ import { ContractModule } from './modules/contract.module';
 import { ContractSectionModule } from './modules/contract-section.module';
 import { ParticipantModule } from './modules/participant.module';
 import { ContractSectionParticipantModule } from './modules/contract-section-participant.module';
+import { ContractSectionHistoryModule } from './modules/contract-section-history.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ContractSectionParticipantModule } from './modules/contract-section-par
     ParticipantModule,
     ContractSectionModule,
     ContractSectionParticipantModule,
+    ContractSectionHistoryModule,
     UserControllerModule,
     AuthControllerModule,
   ],

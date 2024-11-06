@@ -16,3 +16,9 @@ export enum ContractSectionParticipantStatuses {
   Pending = 'pending',
   Rejected = 'rejected',
 }
+
+export enum ContractSectionHistoryActions {
+  Approved = 'approved',
+  Rejected = 'rejected',
+  ChangeContent = 'change-content',
+}

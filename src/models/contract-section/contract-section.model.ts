@@ -12,6 +12,7 @@ import {
 import { Contract } from '../contract/contract.model';
 import { ContractSectionParticipant } from '../contract-section-participant/contract-section-participant.model';
 import { Constants } from 'src/config';
+import { ContractSectionHistory } from '../contract-section-history/contract-section-history.model';
 
 @Table({
   tableName: 'contract-sections',
@@ -66,4 +67,7 @@ export class ContractSection extends Model {
 
   @HasMany(() => ContractSectionParticipant)
   participantStatuses: ContractSectionParticipant[];
+
+  @HasMany(() => ContractSectionHistory)
+  history: ContractSectionHistory[];
 }

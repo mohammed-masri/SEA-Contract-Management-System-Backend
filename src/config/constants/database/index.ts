@@ -5,4 +5,5 @@ export enum DatabaseRepositories {
   ContractSectionRepository = 'ContractSectionRepository',
   ParticipantRepository = 'ParticipantRepository',
   ContractSectionParticipantRepository = 'ContractSectionParticipantRepository',
+  ContractSectionHistoryRepository = 'ContractSectionHistoryRepository',
 }
