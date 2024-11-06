@@ -12,6 +12,7 @@ import { ParticipantModule } from './modules/participant.module';
 import { ContractSectionParticipantModule } from './modules/contract-section-participant.module';
 import { ContractSectionHistoryModule } from './modules/contract-section-history.module';
 import { ServerConfigModule } from './modules/server-config.module';
+import { ContractTemplateModule } from './modules/contract-template.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ServerConfigModule } from './modules/server-config.module';
     ContractSectionModule,
     ContractSectionParticipantModule,
     ContractSectionHistoryModule,
+    ContractTemplateModule,
     UserControllerModule,
     AuthControllerModule,
   ],

@@ -3,6 +3,7 @@ import { Constants } from 'src/config';
 import { ContractSectionHistory } from 'src/models/contract-section-history/contract-section-history.model';
 import { ContractSectionParticipant } from 'src/models/contract-section-participant/contract-section-participant.model';
 import { ContractSection } from 'src/models/contract-section/contract-section.model';
+import { ContractTemplate } from 'src/models/contract-template/contract-template.model';
 import { Contract } from 'src/models/contract/contract.model';
 import { OTP } from 'src/models/otp/otp.model';
 import { Participant } from 'src/models/participant/participant.model';
@@ -39,6 +40,7 @@ export const databaseProviders = [
         Participant,
         ContractSectionParticipant,
         ContractSectionHistory,
+        ContractTemplate,
       ]);
       await sequelize.sync();
       return sequelize;
