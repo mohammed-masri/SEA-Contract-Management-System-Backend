@@ -6,6 +6,7 @@ import { AuthControllerModule } from './controllers/auth/auth-controller.module'
 import { AuthModule } from './modules/auth.module';
 import { OTPModule } from './modules/otp.module';
 import { ConfigModule } from '@nestjs/config';
+import { ContractModule } from './modules/contract.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     AuthModule,
     OTPModule,
+    ContractModule,
     UserControllerModule,
     AuthControllerModule,
   ],

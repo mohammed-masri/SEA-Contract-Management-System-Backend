@@ -11,6 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { BcryptUtils, PhoneNumberUtils, StringUtils } from 'src/utils';
 import { OTP } from '../otp/otp.model';
+import { Contract } from '../contract/contract.model';
 
 @Table({
   tableName: 'users', // Set table name if different from model name
@@ -66,6 +67,9 @@ export class User extends Model {
 
   @HasMany(() => OTP)
   OTPs: OTP[];
+
+  @HasMany(() => Contract)
+  contracts: Contract[];
 
   @BeforeCreate
   @BeforeUpdate
