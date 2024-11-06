@@ -12,6 +12,7 @@ import { Constants } from 'src/config';
 import { User } from '../user/user.model';
 import { ContractSection } from '../contract-section/contract-section.model';
 import { Participant } from '../participant/participant.model';
+import { ContractTemplate } from '../contract-template/contract-template.model';
 
 @Table({
   tableName: 'contracts',
@@ -45,4 +46,8 @@ export class Contract extends Model {
 
   @HasMany(() => Participant)
   participants: Participant[];
+
+  @ForeignKey(() => ContractTemplate)
+  @Column(DataType.UUID)
+  templateId: string;
 }
