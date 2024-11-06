@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -93,7 +92,7 @@ export class UserController {
     type: UserResponse,
   })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async fetchUserDetails(@Param('id', ParseIntPipe) id: number) {
+  async fetchUserDetails(@Param('id') id: string) {
     const user = await this.userService.checkIsFound({ where: { id } });
     const userResponse = await this.userService.makeUserResponse(user);
     return userResponse;
@@ -112,7 +111,7 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: 'User not found' })
   async updateUserDetails(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() body: UpdateUserDto,
   ) {
     let user = await this.userService.checkIsFound({ where: { id } });
@@ -134,7 +133,7 @@ export class UserController {
   })
   @ApiNotFoundResponse({ description: 'User not found' })
   async changeUserPassword(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() body: ChangePasswordDto,
   ) {
     const user = await this.userService.checkIsFound({ where: { id } });
@@ -153,7 +152,7 @@ export class UserController {
     type: UserResponse,
   })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async toggleLock(@Param('id', ParseIntPipe) id: number) {
+  async toggleLock(@Param('id') id: string) {
     let user = await this.userService.checkIsFound({ where: { id } });
     user = await this.userService.toggleLockStatus(user);
     return await this.userService.makeUserResponse(user);
@@ -171,7 +170,7 @@ export class UserController {
     type: UserResponse,
   })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id') id: string) {
     const user = await this.userService.checkIsFound({ where: { id } });
     await this.userService.delete(user);
     const userResponse = await this.userService.makeUserResponse(user);

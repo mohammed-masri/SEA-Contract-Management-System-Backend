@@ -3,7 +3,6 @@ import {
   Column,
   Model,
   PrimaryKey,
-  AutoIncrement,
   DataType,
   ForeignKey,
   Default,
@@ -16,10 +15,10 @@ import { Constants } from 'src/config';
   timestamps: true, // Automatically adds createdAt and updatedAt timestamps
 })
 export class OTP extends Model {
-  @PrimaryKey // Sets this column as the primary key
-  @AutoIncrement // Auto-increment for IDs
-  @Column
-  id: number;
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id: string;
 
   @Column({
     type: DataType.STRING,
@@ -38,6 +37,6 @@ export class OTP extends Model {
   remainingTries;
 
   @ForeignKey(() => User)
-  @Column({ allowNull: true })
-  userId: number | null;
+  @Column(DataType.UUID)
+  userId: string | null;
 }

@@ -3,11 +3,11 @@ import {
   Column,
   Model,
   PrimaryKey,
-  AutoIncrement,
   DataType,
   BeforeCreate,
   BeforeUpdate,
   HasMany,
+  Default,
 } from 'sequelize-typescript';
 import { BcryptUtils, PhoneNumberUtils, StringUtils } from 'src/utils';
 import { OTP } from '../otp/otp.model';
@@ -18,16 +18,16 @@ import { OTP } from '../otp/otp.model';
   paranoid: true, // Enables soft deletes by adding a deletedAt timestamp
 })
 export class User extends Model {
-  @PrimaryKey // Sets this column as the primary key
-  @AutoIncrement // Auto-increment for IDs
-  @Column
-  id: number;
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  id: string;
 
   @Column({
-    type: DataType.STRING, // Specifies the data type
-    allowNull: false, // Sets this column as NOT NULL
+    type: DataType.STRING,
+    allowNull: false,
     validate: {
-      len: [3, 50], // Adds a length validation for the name (between 3 and 50 characters)
+      len: [3, 50],
     },
   })
   name: string;

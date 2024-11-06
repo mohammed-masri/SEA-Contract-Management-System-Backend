@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.model';
 
 export class UserResponse {
-  @ApiProperty({ type: Number })
-  id: number;
+  @ApiProperty({ type: String })
+  id: string;
   @ApiProperty()
   name: string;
   @ApiProperty()
