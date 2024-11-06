@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth.module';
 import { OTPModule } from './modules/otp.module';
 import { ConfigModule } from '@nestjs/config';
 import { ContractModule } from './modules/contract.module';
+import { ContractSectionModule } from './modules/contract-section.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ContractModule } from './modules/contract.module';
     AuthModule,
     OTPModule,
     ContractModule,
+    ContractSectionModule,
     UserControllerModule,
     AuthControllerModule,
   ],

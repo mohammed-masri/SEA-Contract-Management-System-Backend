@@ -6,9 +6,11 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 import { Constants } from 'src/config';
 import { User } from '../user/user.model';
+import { ContractSection } from '../contract-section/contract-section.model';
 
 @Table({
   tableName: 'contracts',
@@ -27,6 +29,7 @@ export class Contract extends Model {
   })
   name: string;
 
+  @Default(Constants.Contract.ContractStatuses.Draft)
   @Column({
     type: DataType.ENUM(...Object.values(Constants.Contract.ContractStatuses)),
   })
@@ -35,4 +38,7 @@ export class Contract extends Model {
   @ForeignKey(() => User)
   @Column(DataType.UUID)
   userId: string | null;
+
+  @HasMany(() => ContractSection)
+  sections: ContractSection[];
 }
