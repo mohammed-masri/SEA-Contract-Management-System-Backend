@@ -11,6 +11,7 @@ import { ContractSectionModule } from './modules/contract-section.module';
 import { ParticipantModule } from './modules/participant.module';
 import { ContractSectionParticipantModule } from './modules/contract-section-participant.module';
 import { ContractSectionHistoryModule } from './modules/contract-section-history.module';
+import { ServerConfigModule } from './modules/server-config.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ContractSectionHistoryModule } from './modules/contract-section-history
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ServerConfigModule,
     UserModule,
     AuthModule,
     OTPModule,
