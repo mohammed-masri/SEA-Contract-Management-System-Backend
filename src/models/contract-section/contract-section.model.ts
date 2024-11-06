@@ -10,6 +10,8 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { Contract } from '../contract/contract.model';
+import { ContractSectionParticipant } from '../contract-section-participant/contract-section-participant.model';
+import { Constants } from 'src/config';
 
 @Table({
   tableName: 'contract-sections',
@@ -40,6 +42,14 @@ export class ContractSection extends Model {
   })
   order: number;
 
+  @Default(Constants.Contract.ContractSectionStatuses.Pending)
+  @Column({
+    type: DataType.ENUM(
+      ...Object.values(Constants.Contract.ContractSectionStatuses),
+    ),
+  })
+  overallStatus: Constants.Contract.ContractSectionStatuses;
+
   @ForeignKey(() => Contract)
   @Column(DataType.UUID)
   contractId: string;
@@ -53,4 +63,7 @@ export class ContractSection extends Model {
 
   @HasMany(() => ContractSection, 'parentId')
   subSections: ContractSection[];
+
+  @HasMany(() => ContractSectionParticipant)
+  participantStatuses: ContractSectionParticipant[];
 }

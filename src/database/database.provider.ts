@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Sequelize } from 'sequelize-typescript';
+import { ContractSectionParticipant } from 'src/models/contract-section-participant/contract-section-participant.model';
 import { ContractSection } from 'src/models/contract-section/contract-section.model';
 import { Contract } from 'src/models/contract/contract.model';
 import { OTP } from 'src/models/otp/otp.model';
@@ -21,7 +22,14 @@ export const databaseProviders = [
         dialect: 'mysql',
         ...ConnectionConfig,
       });
-      sequelize.addModels([User, OTP, Contract, ContractSection, Participant]);
+      sequelize.addModels([
+        User,
+        OTP,
+        Contract,
+        ContractSection,
+        Participant,
+        ContractSectionParticipant,
+      ]);
       await sequelize.sync();
       return sequelize;
     },

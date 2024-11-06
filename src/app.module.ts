@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ContractModule } from './modules/contract.module';
 import { ContractSectionModule } from './modules/contract-section.module';
 import { ParticipantModule } from './modules/participant.module';
+import { ContractSectionParticipantModule } from './modules/contract-section-participant.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ParticipantModule } from './modules/participant.module';
     ContractModule,
     ParticipantModule,
     ContractSectionModule,
+    ContractSectionParticipantModule,
     UserControllerModule,
     AuthControllerModule,
   ],
