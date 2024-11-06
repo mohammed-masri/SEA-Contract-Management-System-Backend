@@ -14,9 +14,21 @@ import { OTP } from '../otp/otp.model';
 import { Contract } from '../contract/contract.model';
 
 @Table({
-  tableName: 'users', // Set table name if different from model name
-  timestamps: true, // Automatically adds createdAt and updatedAt timestamps
-  paranoid: true, // Enables soft deletes by adding a deletedAt timestamp
+  tableName: 'users',
+  timestamps: true,
+  paranoid: true,
+  indexes: [
+    {
+      unique: true,
+      fields: ['email'],
+      name: 'unique_email',
+    },
+    {
+      unique: true,
+      fields: ['phoneNumber'],
+      name: 'unique_phone_number',
+    },
+  ],
 })
 export class User extends Model {
   @PrimaryKey
@@ -35,14 +47,12 @@ export class User extends Model {
 
   @Column({
     type: DataType.STRING,
-    unique: true,
     allowNull: false,
   })
   email: string;
 
   @Column({
     type: DataType.STRING,
-    unique: true,
     allowNull: false,
   })
   phoneNumber: string;
