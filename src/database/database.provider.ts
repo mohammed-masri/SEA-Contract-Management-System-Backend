@@ -1,5 +1,6 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import { Constants } from 'src/config';
+import { ContractSectionComment } from 'src/models/contract-section-comment/contract-section-comment.model';
 import { ContractSectionHistory } from 'src/models/contract-section-history/contract-section-history.model';
 import { ContractSectionParticipant } from 'src/models/contract-section-participant/contract-section-participant.model';
 import { ContractSectionTemplate } from 'src/models/contract-section-template/contract-section-template.model';
@@ -43,6 +44,7 @@ export const databaseProviders = [
         ContractSectionHistory,
         ContractTemplate,
         ContractSectionTemplate,
+        ContractSectionComment,
       ]);
       await sequelize.sync();
       return sequelize;

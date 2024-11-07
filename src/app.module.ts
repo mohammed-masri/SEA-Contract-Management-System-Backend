@@ -14,6 +14,7 @@ import { ContractSectionHistoryModule } from './modules/contract-section-history
 import { ServerConfigModule } from './modules/server-config.module';
 import { ContractTemplateModule } from './modules/contract-template.module';
 import { ContractSectionTemplateModule } from './modules/contract-section-template.module';
+import { ContractSectionCommentModule } from './modules/contract-section-comment.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ContractSectionTemplateModule } from './modules/contract-section-templa
     ContractSectionHistoryModule,
     ContractTemplateModule,
     ContractSectionTemplateModule,
+    ContractSectionCommentModule,
     UserControllerModule,
     AuthControllerModule,
   ],
