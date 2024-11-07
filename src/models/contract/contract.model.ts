@@ -31,6 +31,12 @@ export class Contract extends Model {
   })
   name: string;
 
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  description: string;
+
   @Default(Constants.Contract.ContractStatuses.Draft)
   @Column({
     type: DataType.ENUM(...Object.values(Constants.Contract.ContractStatuses)),
