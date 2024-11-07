@@ -5,6 +5,11 @@ export enum ContractStatuses {
   Approved = 'approved',
 }
 
+export enum ContractTemplateStatuses {
+  Draft = 'draft',
+  Published = 'Published',
+}
+
 export enum ContractSectionStatuses {
   Approved = 'approved',
   Pending = 'pending',

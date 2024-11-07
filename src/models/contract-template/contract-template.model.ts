@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { ContractSectionTemplate } from '../contract-section-template/contract-section-template.model';
 import { Contract } from '../contract/contract.model';
+import { Constants } from 'src/config';
 
 @Table({
   tableName: 'contract-templates',
@@ -32,6 +33,14 @@ export class ContractTemplate extends Model {
     allowNull: true,
   })
   description: string;
+
+  @Default(Constants.Contract.ContractTemplateStatuses.Draft)
+  @Column({
+    type: DataType.ENUM(
+      ...Object.values(Constants.Contract.ContractTemplateStatuses),
+    ),
+  })
+  status: Constants.Contract.ContractTemplateStatuses;
 
   @HasMany(() => ContractSectionTemplate)
   sections: ContractSectionTemplate[];
