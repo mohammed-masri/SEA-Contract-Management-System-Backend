@@ -23,6 +23,7 @@ export enum ContractSectionParticipantStatuses {
 }
 
 export enum ContractSectionHistoryActions {
+  Created = 'created',
   Approved = 'approved',
   Rejected = 'rejected',
   ChangeContent = 'change-content',

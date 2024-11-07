@@ -30,7 +30,7 @@ export class ContractSectionHistory extends Model {
 
   @ForeignKey(() => Participant)
   @Column(DataType.UUID)
-  participantId: string;
+  participantId: string | null;
 
   @Column({
     type: DataType.ENUM(
