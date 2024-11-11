@@ -10,6 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
 import { Contract } from '../contract/contract.model';
+import { Constants } from 'src/config';
 
 @Table({
   tableName: 'participants',
@@ -23,14 +24,23 @@ export class Participant extends Model {
   id: string;
 
   @Column({
-    type: DataType.ENUM('User', 'Guest'),
+    type: DataType.ENUM(
+      ...Object.values(Constants.Participant.ParticipantTypes),
+    ),
     allowNull: false,
   })
-  type: 'User' | 'Guest';
+  type: Constants.Participant.ParticipantTypes;
 
   @ForeignKey(() => Contract)
   @Column(DataType.UUID)
   contractId: string;
+
+  @Column({
+    type: DataType.ENUM(
+      ...Object.values(Constants.Participant.ParticipantRoles),
+    ),
+  })
+  role: Constants.Participant.ParticipantRoles;
 
   @ForeignKey(() => User)
   @Column(DataType.UUID)
