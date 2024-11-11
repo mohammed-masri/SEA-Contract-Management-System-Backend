@@ -48,7 +48,6 @@ export class Participant extends Model {
 
   @Column({
     type: DataType.STRING,
-    unique: true,
     allowNull: true,
   })
   guestEmail: string | null;
