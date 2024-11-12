@@ -57,7 +57,10 @@ export class ContractService {
 
   async create(body: CreateContractDto, userId: string) {
     const contractTemplate = await this.contractTemplateService.checkIsFound({
-      where: { id: body.templateId },
+      where: {
+        id: body.templateId,
+        status: Constants.Contract.ContractTemplateStatuses.Published,
+      },
       include: [{ model: ContractSectionTemplate, where: { parentId: null } }],
     });
 
