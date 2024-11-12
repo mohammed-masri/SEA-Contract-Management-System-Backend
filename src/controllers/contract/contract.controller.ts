@@ -23,12 +23,14 @@ import {
 import {
   ContractShortArrayDataResponse,
   CreateContractDto,
+  CreateContractSectionDto,
 } from './contract.dto';
 import { ContractService } from 'src/models/contract/contract.service';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { AuthorizedRequest, FindAllDto } from 'src/common/global.dto';
 import { UserService } from 'src/models/user/user.service';
 import { ContractFullResponse } from 'src/models/contract/contract.dto';
+import { ContractSectionService } from 'src/models/contract-section/contract-section.service';
 
 @Controller('contracts')
 @ApiTags('My Contracts')
@@ -37,6 +39,7 @@ export class ContractController {
   constructor(
     private readonly contractService: ContractService,
     private readonly userService: UserService,
+    private readonly contractSectionService: ContractSectionService,
   ) {}
 
   @Get()
@@ -73,7 +76,7 @@ export class ContractController {
   @ApiOperation({ summary: 'get contract details' })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID',
   })
   @ApiOkResponse({
@@ -104,5 +107,38 @@ export class ContractController {
 
     await this.contractService.create(body, userId);
     return true;
+  }
+
+  @Post('/:id/sections')
+  @ApiOperation({ summary: 'Create a new contract section' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID',
+  })
+  @ApiCreatedResponse({
+    description: 'The contract section has been created successfully.',
+    type: Boolean,
+  })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  async createContractSection(
+    @Param('id') id: string,
+    @Body() body: CreateContractSectionDto,
+    @Request() req: AuthorizedRequest,
+  ) {
+    const userId = req.context.id;
+    await this.userService.checkIsFound({ where: { id: userId } });
+
+    const contract = await this.contractService.checkIsFound({ where: { id } });
+
+    const contractSection = await this.contractSectionService.create(
+      contract,
+      body.title,
+      body.content,
+      body.order,
+      body.parentId,
+    );
+
+    return contractSection;
   }
 }
