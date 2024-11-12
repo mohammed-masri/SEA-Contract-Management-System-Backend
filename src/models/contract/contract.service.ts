@@ -160,4 +160,29 @@ export class ContractService {
 
     return new ContractFullResponse(contract, contractSectionsResponse);
   }
+
+  async calculateStatus(
+    contract: Contract,
+    action: 'create-section' | 'update-section',
+  ) {
+    switch (action) {
+      case 'create-section': {
+        if (
+          [
+            Constants.Contract.ContractStatuses.Draft,
+            Constants.Contract.ContractStatuses.DraftCompleted,
+          ].includes(contract.status)
+        )
+          contract.status = Constants.Contract.ContractStatuses.Draft;
+        else contract.status = Constants.Contract.ContractStatuses.Pending;
+
+        break;
+      }
+
+      default:
+        break;
+    }
+
+    await contract.save();
+  }
 }

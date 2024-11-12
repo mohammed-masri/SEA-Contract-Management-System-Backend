@@ -139,6 +139,8 @@ export class ContractController {
       body.parentId,
     );
 
+    await this.contractService.calculateStatus(contract, 'create-section');
+
     return contractSection;
   }
 }

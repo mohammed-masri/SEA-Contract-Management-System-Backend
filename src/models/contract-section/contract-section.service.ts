@@ -90,17 +90,6 @@ export class ContractSectionService {
 
     const saved = await contractSection.save();
 
-    // calculate the new status of the contract
-    if (
-      [
-        Constants.Contract.ContractStatuses.Draft,
-        Constants.Contract.ContractStatuses.DraftCompleted,
-      ].includes(contract.status)
-    )
-      contract.status = Constants.Contract.ContractStatuses.Draft;
-    else contract.status = Constants.Contract.ContractStatuses.Pending;
-    await contract.save();
-
     return saved;
   }
 
