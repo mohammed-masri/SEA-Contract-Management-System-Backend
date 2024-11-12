@@ -145,6 +145,16 @@ export class ContractService {
   }
 
   async makeContractFullResponse(contract: Contract) {
-    return new ContractFullResponse(contract);
+    const { contractSections } = await this.contractSectionService.findAll({
+      where: { contractId: contract.id, parentId: null },
+      order: [['order', 'ASC']],
+    });
+
+    const contractSectionsResponse =
+      await this.contractSectionService.makeContractSectionsResponse(
+        contractSections,
+      );
+
+    return new ContractFullResponse(contract, contractSectionsResponse);
   }
 }

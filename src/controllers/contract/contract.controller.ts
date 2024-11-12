@@ -17,6 +17,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import {
@@ -30,6 +31,7 @@ import { UserService } from 'src/models/user/user.service';
 import { ContractFullResponse } from 'src/models/contract/contract.dto';
 
 @Controller('contracts')
+@ApiTags('My Contracts')
 @UseGuards(JWTAuthGuard)
 export class ContractController {
   constructor(

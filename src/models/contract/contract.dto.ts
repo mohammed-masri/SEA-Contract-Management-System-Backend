@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.model';
 import { Constants } from 'src/config';
+import { ContractSectionResponse } from '../contract-section/contract-section.dto';
 
 export class ContractShortResponse {
   @ApiProperty({ type: String })
@@ -27,7 +28,11 @@ export class ContractShortResponse {
 }
 
 export class ContractFullResponse extends ContractShortResponse {
-  constructor(contract: Contract) {
+  @ApiProperty({ type: ContractSectionResponse, isArray: true })
+  sections: ContractSectionResponse[];
+
+  constructor(contract: Contract, sections: ContractSectionResponse[]) {
     super(contract);
+    this.sections = sections;
   }
 }
