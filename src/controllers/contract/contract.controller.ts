@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -16,7 +17,6 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -56,8 +56,7 @@ export class ContractController {
     type: Number,
     description: 'Number of items per page',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Retrieve a paginated list of users',
     type: ContractShortArrayDataResponse,
   })
@@ -109,12 +108,12 @@ export class ContractController {
     return true;
   }
 
-  @Post('/:id/sections')
+  @Post('/:contractId/sections')
   @ApiOperation({ summary: 'Create a new contract section' })
   @ApiParam({
-    name: 'id',
+    name: 'contractId',
     type: String,
-    description: 'ID',
+    description: 'Contract Id',
   })
   @ApiCreatedResponse({
     description: 'The contract section has been created successfully.',
@@ -122,14 +121,16 @@ export class ContractController {
   })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
   async createContractSection(
-    @Param('id') id: string,
+    @Param('contractId') contractId: string,
     @Body() body: CreateContractSectionDto,
     @Request() req: AuthorizedRequest,
   ) {
     const userId = req.context.id;
     await this.userService.checkIsFound({ where: { id: userId } });
 
-    const contract = await this.contractService.checkIsFound({ where: { id } });
+    const contract = await this.contractService.checkIsFound({
+      where: { id: contractId },
+    });
 
     const contractSection = await this.contractSectionService.create(
       contract,
@@ -140,6 +141,46 @@ export class ContractController {
     );
 
     await this.contractService.calculateStatus(contract, 'create-section');
+
+    return contractSection;
+  }
+
+  @Delete('/:contractId/sections/:sectionId')
+  @ApiOperation({ summary: 'Delete a contract section' })
+  @ApiParam({
+    name: 'contractId',
+    type: String,
+    description: 'Contract Id',
+  })
+  @ApiParam({
+    name: 'sectionId',
+    type: String,
+    description: 'Section Id',
+  })
+  @ApiOkResponse({
+    description: 'The contract section has been deleted successfully.',
+    type: Boolean,
+  })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  async deleteContractSection(
+    @Param('contractId') contractId: string,
+    @Param('sectionId') sectionId: string,
+    @Request() req: AuthorizedRequest,
+  ) {
+    const userId = req.context.id;
+    await this.userService.checkIsFound({ where: { id: userId } });
+
+    const contract = await this.contractService.checkIsFound({
+      where: { id: contractId },
+    });
+
+    const contractSection = await this.contractSectionService.checkIsFound({
+      where: { id: sectionId },
+    });
+
+    await this.contractSectionService.delete(contractSection);
+
+    await this.contractService.calculateStatus(contract, 'delete-section');
 
     return contractSection;
   }

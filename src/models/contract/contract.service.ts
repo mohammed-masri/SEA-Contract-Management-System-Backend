@@ -163,10 +163,11 @@ export class ContractService {
 
   async calculateStatus(
     contract: Contract,
-    action: 'create-section' | 'update-section',
+    action: 'create-section' | 'update-section' | 'delete-section',
   ) {
     switch (action) {
-      case 'create-section': {
+      case 'create-section':
+      case 'delete-section': {
         if (
           [
             Constants.Contract.ContractStatuses.Draft,

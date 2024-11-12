@@ -152,4 +152,20 @@ export class ContractSectionService {
     }
     return contractSectionsResponse;
   }
+
+  async delete(contractSection: ContractSection) {
+    // delete children first
+    const { contractSections: contractSectionSubsections } = await this.findAll(
+      {
+        where: { parentId: contractSection.id },
+        order: [['order', 'ASC']],
+      },
+    );
+
+    for (let i = 0; i < contractSectionSubsections.length; i++) {
+      await this.delete(contractSectionSubsections[i]);
+    }
+
+    return await contractSection.destroy({ force: true });
+  }
 }
