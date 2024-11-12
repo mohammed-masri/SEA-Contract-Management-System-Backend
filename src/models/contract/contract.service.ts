@@ -1,11 +1,150 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Constants } from 'src/config';
 import { Contract } from './contract.model';
+import { ContractTemplateService } from '../contract-template/contract-template.service';
+import {
+  ContractShortArrayDataResponse,
+  CreateContractDto,
+} from 'src/controllers/contract/contract.dto';
+import { ContractSectionTemplate } from '../contract-section-template/contract-section-template.model';
+
+import { ContractTemplate } from '../contract-template/contract-template.model';
+import { ContractSectionService } from '../contract-section/contract-section.service';
+import { Attributes, FindOptions } from 'sequelize';
+import { ContractFullResponse, ContractShortResponse } from './contract.dto';
 
 @Injectable()
 export class ContractService {
   constructor(
     @Inject(Constants.Database.DatabaseRepositories.ContractRepository)
     private contractRepository: typeof Contract,
+    private readonly contractTemplateService: ContractTemplateService,
+    private readonly contractSectionService: ContractSectionService,
   ) {}
+
+  async findOne(options?: FindOptions<Attributes<Contract>>) {
+    return await this.contractRepository.findOne(options);
+  }
+
+  async checkIsFound(options?: FindOptions<Attributes<Contract>>) {
+    const contract = await this.findOne(options);
+    if (!contract) throw new NotFoundException(`Contract not found!`);
+
+    return contract;
+  }
+
+  async findAll(
+    options?: FindOptions<Attributes<Contract>>,
+    page: number | null = null,
+    limit: number | null = null,
+  ) {
+    let offset: number | null = null;
+    if (page && limit) {
+      offset = (page - 1) * limit;
+      if (page < 1) page = 1;
+    }
+    const { count: totalCount, rows: contracts } =
+      await this.contractRepository.findAndCountAll({
+        ...options,
+        limit,
+        offset,
+      });
+    return {
+      totalCount,
+      contracts,
+    };
+  }
+
+  async create(body: CreateContractDto, userId: string) {
+    const contractTemplate = await this.contractTemplateService.checkIsFound({
+      where: { id: body.templateId },
+      include: [{ model: ContractSectionTemplate, where: { parentId: null } }],
+    });
+
+    const contract = await this.createFromContractTemplate(
+      body.name,
+      body.description,
+      userId,
+      contractTemplate,
+    );
+
+    return { contractTemplate, contract };
+  }
+
+  async createFromContractTemplate(
+    name: string,
+    description: string,
+    userId: string,
+    ct: ContractTemplate,
+  ) {
+    const contract = new this.contractRepository({
+      name,
+      description,
+      userId,
+      templateId: ct.id,
+    });
+
+    const saved = await contract.save();
+
+    for (let i = 0; i < ct.sections.length; i++) {
+      const cst = ct.sections[i];
+      await this.contractSectionService.createFromContractSectionTemplate(
+        cst,
+        saved.id,
+        null,
+      );
+    }
+
+    return contract;
+  }
+
+  async makeContractShortResponse(contract: Contract) {
+    return new ContractShortResponse(contract);
+  }
+
+  async makeContractShortArrayDataResponse(
+    contracts: ContractShortResponse[],
+    totalCount: number,
+    page: number,
+    limit: number,
+  ) {
+    return new ContractShortArrayDataResponse(
+      totalCount,
+      contracts,
+      page,
+      limit,
+    );
+  }
+
+  async makeContractShortArrayDataResponseForUser(
+    userId: string,
+    page: number,
+    limit: number,
+  ) {
+    const { totalCount, contracts } = await this.findAll(
+      { where: { userId } },
+      page,
+      limit,
+    );
+
+    const contractsResponse: ContractShortResponse[] = [];
+
+    for (let i = 0; i < contracts.length; i++) {
+      const contractResponse = await this.makeContractShortResponse(
+        contracts[i],
+      );
+      contractsResponse.push(contractResponse);
+    }
+
+    return await this.makeContractShortArrayDataResponse(
+      contractsResponse,
+      totalCount,
+      page,
+      limit,
+    );
+  }
+
+  async makeContractFullResponse(contract: Contract) {
+    return new ContractFullResponse(contract);
+  }
 }

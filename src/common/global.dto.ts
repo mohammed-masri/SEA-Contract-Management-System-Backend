@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, Min } from 'class-validator';
 import { Request } from 'express';
 
 export class ArrayDataResponse<T> {
@@ -25,6 +27,30 @@ export class ArrayDataResponse<T> {
 
 export class AuthorizedRequest extends Request {
   context: {
-    id: number;
+    id: string;
   };
+}
+
+export class FindAllDto {
+  @ApiProperty({
+    description: 'Page number for pagination (default is 1)',
+    example: 1,
+    required: false,
+  })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  page?: number = 1;
+
+  @ApiProperty({
+    description: 'Number of items per page (default is 10)',
+    example: 10,
+    required: false,
+  })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  limit?: number = 10;
 }

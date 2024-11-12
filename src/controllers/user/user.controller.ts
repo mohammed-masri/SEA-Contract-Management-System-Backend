@@ -23,11 +23,11 @@ import { UserService } from 'src/models/user/user.service';
 import {
   ChangePasswordDto,
   CreateUserDto,
-  FindAllDto,
   UpdateUserDto,
   UserArrayDataResponse,
 } from './user.dto';
 import { UserResponse } from 'src/models/user/user.dto';
+import { FindAllDto } from 'src/common/global.dto';
 
 @Controller('users')
 export class UserController {

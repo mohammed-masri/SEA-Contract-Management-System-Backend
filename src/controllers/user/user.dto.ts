@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsEmail,
@@ -8,8 +8,6 @@ import {
   IsPhoneNumber,
   MinLength,
   MaxLength,
-  IsInt,
-  Min,
 } from 'class-validator';
 import { ArrayDataResponse } from 'src/common/global.dto';
 import { UserResponse } from 'src/models/user/user.dto';
@@ -60,30 +58,6 @@ export class CreateUserDto {
   @IsOptional()
   @IsDateString()
   birthDate?: Date;
-}
-
-export class FindAllDto {
-  @ApiProperty({
-    description: 'Page number for pagination (default is 1)',
-    example: 1,
-    required: false,
-  })
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  page?: number = 1;
-
-  @ApiProperty({
-    description: 'Number of items per page (default is 10)',
-    example: 10,
-    required: false,
-  })
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  limit?: number = 10;
 }
 
 export class UserArrayDataResponse extends ArrayDataResponse<UserResponse> {

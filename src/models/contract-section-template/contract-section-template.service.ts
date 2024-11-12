@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Constants } from 'src/config';
 import { ContractSectionTemplate } from './contract-section-template.model';
 import { IContractSectionTemplateSeed } from 'src/config/seed-data';
+import { Attributes, FindOptions } from 'sequelize';
 
 @Injectable()
 export class ContractSectionTemplateService {
@@ -12,10 +13,33 @@ export class ContractSectionTemplateService {
     private contractSectionTemplateRepository: typeof ContractSectionTemplate,
   ) {}
 
+  async findAll(
+    options?: FindOptions<Attributes<ContractSectionTemplate>>,
+    page: number | null = null,
+    limit: number | null = null,
+  ) {
+    let offset: number | null = null;
+    if (page && limit) {
+      offset = (page - 1) * limit;
+      if (page < 1) page = 1;
+    }
+
+    const { count: totalCount, rows: contractSectionTemplates } =
+      await this.contractSectionTemplateRepository.findAndCountAll({
+        ...options,
+        limit,
+        offset,
+      });
+    return {
+      totalCount,
+      contractSectionTemplates,
+    };
+  }
+
   async createFromSeed(
     cst: IContractSectionTemplateSeed,
     order: number,
-    contractTemplateId: string,
+    contractTemplateId: string | null,
     parent: ContractSectionTemplate | null,
   ) {
     const contractSectionTemplate = new this.contractSectionTemplateRepository({

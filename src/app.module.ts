@@ -15,6 +15,9 @@ import { ServerConfigModule } from './modules/server-config.module';
 import { ContractTemplateModule } from './modules/contract-template.module';
 import { ContractSectionTemplateModule } from './modules/contract-section-template.module';
 import { ContractSectionCommentModule } from './modules/contract-section-comment.module';
+import { ContractControllerModule } from './controllers/contract/contract-controller.module';
+import { SeederControllerModule } from './controllers/seeder/seeder-controller.module';
+import { SeederModule } from './modules/seeder.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import { ContractSectionCommentModule } from './modules/contract-section-comment
     ContractSectionCommentModule,
     UserControllerModule,
     AuthControllerModule,
+    ContractControllerModule,
+    SeederControllerModule,
+    SeederModule,
   ],
   controllers: [],
   providers: [],
