@@ -209,6 +209,8 @@ export class ContractService {
       ),
     );
 
+    await this.participantService.deleteAllForContract(contract.id);
+
     await contract.destroy({ force: true });
 
     return true;

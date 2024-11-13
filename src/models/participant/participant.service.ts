@@ -26,4 +26,11 @@ export class ParticipantService {
 
     return await participant.save();
   }
+
+  async deleteAllForContract(contractId: string) {
+    await this.participantRepository.destroy({
+      where: { contractId },
+      force: true,
+    });
+  }
 }
