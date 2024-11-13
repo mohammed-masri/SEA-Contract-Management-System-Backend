@@ -91,8 +91,10 @@ export class ContractController {
   ) {
     const userId = req.context.id;
     await this.userService.checkIsFound({ where: { id: userId } });
+    await this.contractService.checkUserIsAParticipantOfContract(userId, id);
 
     const contract = await this.contractService.checkIsFound({ where: { id } });
+
     const contractResponse =
       await this.contractService.makeContractFullResponseForUser(
         contract,
@@ -131,9 +133,17 @@ export class ContractController {
     type: Boolean,
   })
   @ApiNotFoundResponse({ description: 'Contract not found' })
-  async deleteContract(@Param('id') id: string) {
+  async deleteContract(
+    @Param('id') id: string,
+    @Request() req: AuthorizedRequest,
+  ) {
+    const userId = req.context.id;
+    await this.userService.checkIsFound({ where: { id: userId } });
+    await this.contractService.checkUserIsOwnerOfContract(userId, id);
+
     const contract = await this.contractService.checkIsFound({ where: { id } });
     await this.contractService.delete(contract);
+
     return true;
   }
 
@@ -156,6 +166,10 @@ export class ContractController {
   ) {
     const userId = req.context.id;
     await this.userService.checkIsFound({ where: { id: userId } });
+    await this.contractService.checkUserIsAParticipantOfContract(
+      userId,
+      contractId,
+    );
 
     const contract = await this.contractService.checkIsFound({
       where: { id: contractId },
@@ -246,6 +260,10 @@ export class ContractController {
   ) {
     const userId = req.context.id;
     await this.userService.checkIsFound({ where: { id: userId } });
+    await this.contractService.checkUserIsAParticipantOfContract(
+      userId,
+      contractId,
+    );
 
     const contract = await this.contractService.checkIsFound({
       where: { id: contractId },

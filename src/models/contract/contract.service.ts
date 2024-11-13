@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Constants } from 'src/config';
 import { Contract } from './contract.model';
 import { ContractTemplateService } from '../contract-template/contract-template.service';
@@ -147,12 +152,6 @@ export class ContractService {
         limit,
       );
 
-    // const { totalCount, contracts } = await this.findAll(
-    //   { where: { userId } },
-    //   page,
-    //   limit,
-    // );
-
     const contractsResponse: ContractShortResponseForUser[] = [];
 
     for (let i = 0; i < participants.length; i++) {
@@ -240,5 +239,31 @@ export class ContractService {
     await contract.destroy({ force: true });
 
     return true;
+  }
+
+  async checkUserIsAParticipantOfContract(userId: string, contractId: string) {
+    const participant =
+      await this.participantService.findParticipantForUserInContract(
+        userId,
+        contractId,
+      );
+    if (!participant)
+      throw new UnauthorizedException(
+        `You can't access to this contract, you are not a participant`,
+      );
+
+    return participant;
+  }
+
+  async checkUserIsOwnerOfContract(userId: string, contractId: string) {
+    const participant = await this.checkUserIsAParticipantOfContract(
+      userId,
+      contractId,
+    );
+    if (participant.role !== Constants.Participant.ParticipantRoles.Owner) {
+      throw new UnauthorizedException(
+        `You can't access to this contract, you are not the owner`,
+      );
+    }
   }
 }
