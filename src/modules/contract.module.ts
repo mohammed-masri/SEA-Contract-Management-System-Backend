@@ -4,6 +4,7 @@ import { ContractService } from 'src/models/contract/contract.service';
 import { contractProviders } from 'src/models/contract/contract.provider';
 import { ContractTemplateModuleDependencies } from './contract-template.module';
 import { ContractSectionModuleDependencies } from './contract-section.module';
+import { ParticipantModuleDependencies } from './participant.module';
 
 export const ContractModuleDependencies = {
   imports: [DatabaseModule],
@@ -12,6 +13,7 @@ export const ContractModuleDependencies = {
     ...contractProviders,
     ...ContractTemplateModuleDependencies.providers,
     ...ContractSectionModuleDependencies.providers,
+    ...ParticipantModuleDependencies.providers,
   ],
 };
 

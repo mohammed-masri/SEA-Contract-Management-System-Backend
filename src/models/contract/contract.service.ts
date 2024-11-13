@@ -12,6 +12,7 @@ import { ContractTemplate } from '../contract-template/contract-template.model';
 import { ContractSectionService } from '../contract-section/contract-section.service';
 import { Attributes, FindOptions } from 'sequelize';
 import { ContractFullResponse, ContractShortResponse } from './contract.dto';
+import { ParticipantService } from '../participant/participant.service';
 
 @Injectable()
 export class ContractService {
@@ -20,6 +21,7 @@ export class ContractService {
     private contractRepository: typeof Contract,
     private readonly contractTemplateService: ContractTemplateService,
     private readonly contractSectionService: ContractSectionService,
+    private readonly participantService: ParticipantService,
   ) {}
 
   async findOne(options?: FindOptions<Attributes<Contract>>) {
@@ -71,7 +73,15 @@ export class ContractService {
       contractTemplate,
     );
 
-    return { contractTemplate, contract };
+    await this.participantService.create(
+      Constants.Participant.ParticipantTypes.User,
+      contract.id,
+      Constants.Participant.ParticipantRoles.Owner,
+      userId,
+      null,
+    );
+
+    return contract;
   }
 
   async createFromContractTemplate(

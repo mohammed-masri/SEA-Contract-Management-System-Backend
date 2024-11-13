@@ -8,4 +8,22 @@ export class ParticipantService {
     @Inject(Constants.Database.DatabaseRepositories.ParticipantRepository)
     private participantRepository: typeof Participant,
   ) {}
+
+  async create(
+    type: Constants.Participant.ParticipantTypes,
+    contractId: string,
+    role: Constants.Participant.ParticipantRoles,
+    user: string | null,
+    guestEmail: string | null,
+  ) {
+    const participant = new this.participantRepository({
+      type,
+      contractId,
+      role,
+      user,
+      guestEmail,
+    });
+
+    return await participant.save();
+  }
 }

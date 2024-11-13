@@ -4,6 +4,7 @@ export enum ParticipantTypes {
 }
 
 export enum ParticipantRoles {
+  Owner = 'owner',
   Viewer = 'viewer',
   Signer = 'signer',
   Editor = 'editor',
