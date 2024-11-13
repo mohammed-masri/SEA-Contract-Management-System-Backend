@@ -51,6 +51,42 @@ export const ContractTemplates: IContractTemplateSeed[] = [
           },
         ],
       },
+      {
+        title: 'Third Section',
+        content: '<p>The content of the third section</p>',
+        sections: [
+          {
+            title: 'First subsection of the third section',
+            content:
+              '<p>The content of the first subsection of third section</p>',
+            sections: [],
+          },
+          {
+            title: 'Second subsection of the third section',
+            content:
+              '<p>The content of the second subsection of third section</p>',
+            sections: [],
+          },
+        ],
+      },
+      {
+        title: 'Fourth Section',
+        content: '<p>The content of the fourth section</p>',
+        sections: [
+          {
+            title: 'First subsection of the fourth section',
+            content:
+              '<p>The content of the first subsection of fourth section</p>',
+            sections: [],
+          },
+          {
+            title: 'Second subsection of the fourth section',
+            content:
+              '<p>The content of the second subsection of fourth section</p>',
+            sections: [],
+          },
+        ],
+      },
     ],
   },
 ];
