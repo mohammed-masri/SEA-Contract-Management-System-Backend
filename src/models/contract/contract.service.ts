@@ -167,7 +167,8 @@ export class ContractService {
   ) {
     switch (action) {
       case 'create-section':
-      case 'delete-section': {
+      case 'delete-section':
+      case 'update-section': {
         if (
           [
             Constants.Contract.ContractStatuses.Draft,
@@ -185,5 +186,21 @@ export class ContractService {
     }
 
     await contract.save();
+  }
+
+  async delete(contract: Contract) {
+    const { contractSections } = await this.contractSectionService.findAll({
+      where: { parentId: null, contractId: contract.id },
+    });
+
+    await Promise.all(
+      contractSections.map((section) =>
+        this.contractSectionService.delete(section),
+      ),
+    );
+
+    await contract.destroy({ force: true });
+
+    return true;
   }
 }

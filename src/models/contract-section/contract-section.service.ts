@@ -183,17 +183,108 @@ export class ContractSectionService {
         const orderShouldBe = i + 1;
         const s = sameLevelSections[i];
 
-        console.log('current order is: ', s.order);
-        console.log('order should be: ', orderShouldBe);
-
         if (orderShouldBe !== s.order) {
-          console.log('update');
           await s.update({ order: orderShouldBe });
         }
-        console.log('-------------------------------------------');
       }
     }
 
     return await contractSection.destroy({ force: true });
+  }
+
+  async update(
+    contract: Contract,
+    contractSection: ContractSection,
+    title: string,
+    content: string,
+    order: number,
+    parentId: string | null,
+  ) {
+    contractSection.title = title;
+    contractSection.content = content;
+
+    const theParentChanged = contractSection.parentId !== parentId;
+    const theOrderChanged = contractSection.order !== order;
+
+    contractSection.title = title;
+    contractSection.content = content;
+
+    // parent changed
+    // // fix the ordering in the old level
+    // // fix the ordering in the new level
+    // // change the parent to the new parent
+    // // change the order to the new order
+    if (theParentChanged) {
+      // (order - 1 ) for all the sections after the current section in the old level
+      const { contractSections: oldLevelEffectedSections } = await this.findAll(
+        {
+          where: {
+            contractId: contract.id,
+            parentId: contractSection.parentId,
+            order: { [Op.gt]: contractSection.order },
+          },
+          order: [['order', 'ASC']],
+        },
+      );
+      await Promise.all(
+        oldLevelEffectedSections.map((section) =>
+          section.update({ order: section.order - 1 }),
+        ),
+      );
+
+      // (order + 1 ) for all the sections after the current section in the new level
+      const { contractSections: newLevelEffectedSections } = await this.findAll(
+        {
+          where: {
+            contractId: contract.id,
+            parentId,
+            order: { [Op.gte]: order },
+          },
+          order: [['order', 'ASC']],
+        },
+      );
+
+      await Promise.all(
+        newLevelEffectedSections.map((section) =>
+          section.update({ order: section.order + 1 }),
+        ),
+      );
+
+      contractSection.order = order;
+      contractSection.parentId = parentId;
+    }
+
+    // parent doesn't changed
+    // but order changed
+    // // fix the ordering in the same level for the items from the oldOrder to newOrder
+    // // set the new order to the section
+    if (!theParentChanged && theOrderChanged) {
+      let sumFactor = -1;
+      let whereOrder: any = { [Op.gt]: contractSection.order, [Op.lte]: order };
+      if (contractSection.order > order) {
+        sumFactor = +1;
+        whereOrder = { [Op.gte]: order, [Op.lt]: contractSection.order };
+      }
+
+      const { contractSections: effectedSections } = await this.findAll({
+        where: {
+          contractId: contract.id,
+          parentId: contractSection.parentId,
+          order: whereOrder,
+        },
+        order: [['order', 'ASC']],
+      });
+
+      await Promise.all(
+        effectedSections.map((section) =>
+          section.update({ order: section.order + sumFactor }),
+        ),
+      );
+
+      contractSection.order = order;
+    }
+
+    const saved = await contractSection.save();
+    return saved;
   }
 }

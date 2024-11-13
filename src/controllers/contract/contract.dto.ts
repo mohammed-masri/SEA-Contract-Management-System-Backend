@@ -80,3 +80,39 @@ export class CreateContractSectionDto {
   @IsOptional()
   parentId: string | null;
 }
+
+export class UpdateContractSectionDto {
+  @ApiProperty({
+    description: 'The title of the section',
+    example: 'Terms and Conditions',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
+    description: 'The content of the section in HTML format',
+    example: '<p>Hello World</p>',
+    format: 'html',
+  })
+  @IsString()
+  content: string;
+
+  @ApiProperty({
+    description: 'The order of the section',
+    example: '1',
+  })
+  @IsNumber()
+  @IsPositive()
+  @IsInt()
+  order: number;
+
+  @ApiProperty({
+    description: 'The id of the parent section',
+    example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    nullable: true,
+  })
+  @IsString()
+  @IsUUID()
+  @IsOptional()
+  parentId: string | null;
+}

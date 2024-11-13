@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Request,
   UseGuards,
@@ -24,6 +25,7 @@ import {
   ContractShortArrayDataResponse,
   CreateContractDto,
   CreateContractSectionDto,
+  UpdateContractSectionDto,
 } from './contract.dto';
 import { ContractService } from 'src/models/contract/contract.service';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -108,6 +110,24 @@ export class ContractController {
     return true;
   }
 
+  @Delete('/:id')
+  @ApiOperation({ summary: 'delete a contract' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID',
+  })
+  @ApiOkResponse({
+    description: 'Contract deleted successfully',
+    type: Boolean,
+  })
+  @ApiNotFoundResponse({ description: 'Contract not found' })
+  async deleteContract(@Param('id') id: string) {
+    const contract = await this.contractService.checkIsFound({ where: { id } });
+    await this.contractService.delete(contract);
+    return true;
+  }
+
   @Post('/:contractId/sections')
   @ApiOperation({ summary: 'Create a new contract section' })
   @ApiParam({
@@ -141,6 +161,54 @@ export class ContractController {
     );
 
     await this.contractService.calculateStatus(contract, 'create-section');
+
+    return contractSection;
+  }
+
+  @Put('/:contractId/sections/:sectionId')
+  @ApiOperation({ summary: 'update a contract section' })
+  @ApiParam({
+    name: 'contractId',
+    type: String,
+    description: 'Contract Id',
+  })
+  @ApiParam({
+    name: 'sectionId',
+    type: String,
+    description: 'Section Id',
+  })
+  @ApiOkResponse({
+    description: 'The contract section has been updated successfully.',
+    type: Boolean,
+  })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  async updateContractSection(
+    @Param('contractId') contractId: string,
+    @Param('sectionId') sectionId: string,
+    @Body() body: UpdateContractSectionDto,
+    @Request() req: AuthorizedRequest,
+  ) {
+    const userId = req.context.id;
+    await this.userService.checkIsFound({ where: { id: userId } });
+
+    const contract = await this.contractService.checkIsFound({
+      where: { id: contractId },
+    });
+
+    const contractSection = await this.contractSectionService.checkIsFound({
+      where: { id: sectionId },
+    });
+
+    await this.contractSectionService.update(
+      contract,
+      contractSection,
+      body.title,
+      body.content,
+      body.order,
+      body.parentId,
+    );
+
+    await this.contractService.calculateStatus(contract, 'update-section');
 
     return contractSection;
   }
