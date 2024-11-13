@@ -10,7 +10,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ArrayDataResponse } from 'src/common/global.dto';
-import { ContractShortResponse } from 'src/models/contract/contract.dto';
+import { ContractShortResponseForUser } from 'src/models/contract/contract.dto';
 
 export class CreateContractDto {
   @ApiProperty({
@@ -40,9 +40,9 @@ export class CreateContractDto {
   templateId: string;
 }
 
-export class ContractShortArrayDataResponse extends ArrayDataResponse<ContractShortResponse> {
-  @ApiProperty({ type: ContractShortResponse, isArray: true })
-  data: ContractShortResponse[];
+export class ContractShortArrayDataResponse extends ArrayDataResponse<ContractShortResponseForUser> {
+  @ApiProperty({ type: ContractShortResponseForUser, isArray: true })
+  data: ContractShortResponseForUser[];
 }
 
 export class CreateContractSectionDto {

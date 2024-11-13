@@ -11,7 +11,10 @@ import { ContractSectionTemplate } from '../contract-section-template/contract-s
 import { ContractTemplate } from '../contract-template/contract-template.model';
 import { ContractSectionService } from '../contract-section/contract-section.service';
 import { Attributes, FindOptions } from 'sequelize';
-import { ContractFullResponse, ContractShortResponse } from './contract.dto';
+import {
+  ContractFullResponseForUser,
+  ContractShortResponseForUser,
+} from './contract.dto';
 import { ParticipantService } from '../participant/participant.service';
 
 @Injectable()
@@ -111,12 +114,15 @@ export class ContractService {
     return contract;
   }
 
-  async makeContractShortResponse(contract: Contract) {
-    return new ContractShortResponse(contract);
+  async makeContractShortResponseForUser(
+    contract: Contract,
+    role: Constants.Participant.ParticipantRoles,
+  ) {
+    return new ContractShortResponseForUser(contract, role);
   }
 
   async makeContractShortArrayDataResponse(
-    contracts: ContractShortResponse[],
+    contracts: ContractShortResponseForUser[],
     totalCount: number,
     page: number,
     limit: number,
@@ -134,17 +140,27 @@ export class ContractService {
     page: number,
     limit: number,
   ) {
-    const { totalCount, contracts } = await this.findAll(
-      { where: { userId } },
-      page,
-      limit,
-    );
+    const { participants, totalCount } =
+      await this.participantService.findParticipantsWithContractsForUser(
+        userId,
+        page,
+        limit,
+      );
 
-    const contractsResponse: ContractShortResponse[] = [];
+    // const { totalCount, contracts } = await this.findAll(
+    //   { where: { userId } },
+    //   page,
+    //   limit,
+    // );
 
-    for (let i = 0; i < contracts.length; i++) {
-      const contractResponse = await this.makeContractShortResponse(
-        contracts[i],
+    const contractsResponse: ContractShortResponseForUser[] = [];
+
+    for (let i = 0; i < participants.length; i++) {
+      const participant = participants[i];
+
+      const contractResponse = await this.makeContractShortResponseForUser(
+        participant.contract,
+        participant.role,
       );
       contractsResponse.push(contractResponse);
     }
@@ -157,7 +173,13 @@ export class ContractService {
     );
   }
 
-  async makeContractFullResponse(contract: Contract) {
+  async makeContractFullResponseForUser(contract: Contract, userId: string) {
+    const participant =
+      await this.participantService.findParticipantForUserInContract(
+        userId,
+        contract.id,
+      );
+
     const { contractSections } = await this.contractSectionService.findAll({
       where: { contractId: contract.id, parentId: null },
       order: [['order', 'ASC']],
@@ -168,7 +190,11 @@ export class ContractService {
         contractSections,
       );
 
-    return new ContractFullResponse(contract, contractSectionsResponse);
+    return new ContractFullResponseForUser(
+      contract,
+      participant.role,
+      contractSectionsResponse,
+    );
   }
 
   async calculateStatus(

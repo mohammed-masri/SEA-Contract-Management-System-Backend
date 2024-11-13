@@ -31,7 +31,7 @@ import { ContractService } from 'src/models/contract/contract.service';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { AuthorizedRequest, FindAllDto } from 'src/common/global.dto';
 import { UserService } from 'src/models/user/user.service';
-import { ContractFullResponse } from 'src/models/contract/contract.dto';
+import { ContractFullResponseForUser } from 'src/models/contract/contract.dto';
 import { ContractSectionService } from 'src/models/contract-section/contract-section.service';
 
 @Controller('contracts')
@@ -82,13 +82,22 @@ export class ContractController {
   })
   @ApiOkResponse({
     description: 'Contract fetched successfully',
-    type: ContractFullResponse,
+    type: ContractFullResponseForUser,
   })
   @ApiNotFoundResponse({ description: 'Contract not found' })
-  async fetchContractDetails(@Param('id') id: string) {
+  async fetchContractDetails(
+    @Param('id') id: string,
+    @Request() req: AuthorizedRequest,
+  ) {
+    const userId = req.context.id;
+    await this.userService.checkIsFound({ where: { id: userId } });
+
     const contract = await this.contractService.checkIsFound({ where: { id } });
     const contractResponse =
-      await this.contractService.makeContractFullResponse(contract);
+      await this.contractService.makeContractFullResponseForUser(
+        contract,
+        userId,
+      );
     return contractResponse;
   }
 
