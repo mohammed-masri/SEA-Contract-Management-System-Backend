@@ -22,6 +22,7 @@ export const databaseProviders = [
         username: serverConfigService.get<string>('DATABASE_USERNAME'),
         password: serverConfigService.get<string>('DATABASE_PASSWORD'),
         database: serverConfigService.get<string>('DATABASE_NAME'),
+        logging: serverConfigService.get<string>('DATABASE_LOGGING') === 'true',
       };
 
       const serverEnv = serverConfigService.getServerEnvironment();
