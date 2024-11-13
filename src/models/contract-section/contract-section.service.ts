@@ -6,6 +6,7 @@ import { ContractSectionTemplateService } from '../contract-section-template/con
 import { ContractSectionResponse } from './contract-section.dto';
 import { Attributes, FindOptions } from 'sequelize';
 import { Contract } from '../contract/contract.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ContractSectionService {
@@ -153,7 +154,7 @@ export class ContractSectionService {
     return contractSectionsResponse;
   }
 
-  async delete(contractSection: ContractSection) {
+  async delete(contractSection: ContractSection, reorderSections = true) {
     // delete children first
     const { contractSections: contractSectionSubsections } = await this.findAll(
       {
@@ -163,7 +164,34 @@ export class ContractSectionService {
     );
 
     for (let i = 0; i < contractSectionSubsections.length; i++) {
-      await this.delete(contractSectionSubsections[i]);
+      await this.delete(contractSectionSubsections[i], false);
+    }
+
+    // reorder the sections only in the same level of the deleted section, no need to so that for the children levels
+    if (reorderSections) {
+      // Get the sections at the same level
+      const { contractSections: sameLevelSections } = await this.findAll({
+        where: {
+          id: { [Op.ne]: contractSection.id },
+          contractId: contractSection.contractId,
+          parentId: contractSection.parentId,
+        },
+        order: [['order', 'ASC']],
+      });
+
+      for (let i = 0; i < sameLevelSections.length; i++) {
+        const orderShouldBe = i + 1;
+        const s = sameLevelSections[i];
+
+        console.log('current order is: ', s.order);
+        console.log('order should be: ', orderShouldBe);
+
+        if (orderShouldBe !== s.order) {
+          console.log('update');
+          await s.update({ order: orderShouldBe });
+        }
+        console.log('-------------------------------------------');
+      }
     }
 
     return await contractSection.destroy({ force: true });
