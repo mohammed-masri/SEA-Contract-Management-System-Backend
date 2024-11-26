@@ -194,3 +194,12 @@ export class UpdateMyUserDto {
   @IsDateString()
   birthDate?: Date;
 }
+
+export class MicrosoftLoginUserDto {
+  @ApiProperty({
+    description:
+      'The Id Token the you receive after login to your Microsoft account',
+  })
+  @IsString()
+  idToken: string;
+}

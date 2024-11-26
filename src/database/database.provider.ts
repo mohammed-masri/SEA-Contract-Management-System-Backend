@@ -32,7 +32,6 @@ export const databaseProviders = [
 
       const sequelize = new Sequelize({
         dialect: 'mysql',
-        logging: true,
         ...ConnectionConfig,
       });
       sequelize.addModels([

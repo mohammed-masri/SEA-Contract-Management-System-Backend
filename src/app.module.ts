@@ -18,6 +18,7 @@ import { ContractSectionCommentModule } from './modules/contract-section-comment
 import { ContractControllerModule } from './controllers/contract/contract-controller.module';
 import { SeederControllerModule } from './controllers/seeder/seeder-controller.module';
 import { SeederModule } from './modules/seeder.module';
+import { MicrosoftAuthModule } from './modules/microsoft-auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SeederModule } from './modules/seeder.module';
     ServerConfigModule,
     UserModule,
     AuthModule,
+    MicrosoftAuthModule,
     OTPModule,
     ContractModule,
     ParticipantModule,

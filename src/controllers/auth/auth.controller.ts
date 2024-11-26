@@ -20,6 +20,7 @@ import {
   CheckOTPValidityDto,
   ResetPasswordDto,
   UpdateMyUserDto,
+  MicrosoftLoginUserDto,
 } from './auth.dto';
 import { AuthService } from 'src/models/auth/auth.service';
 import { LoginResponse } from 'src/models/auth/auth.dto';
@@ -47,6 +48,17 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   async loginUser(@Body() body: LoginUserDto) {
     return this.authService.login(body);
+  }
+
+  @Post('/microsoft/login')
+  @ApiOperation({ summary: 'User login with microsoft account' })
+  @ApiOkResponse({
+    description: 'The user has been successfully logged in.',
+    type: LoginResponse,
+  })
+  @ApiUnauthorizedResponse({ description: 'The Id Token is invalid' })
+  async microsoftLoginUser(@Body() body: MicrosoftLoginUserDto) {
+    return this.authService.microsoftLogin(body);
   }
 
   @Get('me')
